@@ -1,0 +1,53 @@
+<th:block th:replace="~{layout :: content(~{::section})}">
+  <section>
+  <ul class="nav nav-pills mb-3">
+    <li class="nav-item"><a class="nav-link active" href="#">Overview</a></li>
+    <li class="nav-item"><a class="nav-link" href="#">Revenue</a></li>
+    <li class="nav-item"><a class="nav-link" href="#">Growth</a></li>
+  </ul>
+  <div class="stat-card d-flex align-items-center justify-content-center mb-3" style="height:120px;">
+    <div class="text-muted">📈 Revenue Chart (Last 30 days)</div>
+  </div>
+  <div class="row g-3">
+    <div class="col-12 col-md-4">
+      <div class="stat-card text-center">
+        <div class="h4 mb-0">15,680</div>
+        <div class="text-muted">Vouchers Sold</div>
+      </div>
+    </div>
+    <div class="col-12 col-md-4">
+      <div class="stat-card text-center">
+        <div class="h4 mb-0">$45,230</div>
+        <div class="text-muted">Total Revenue</div>
+      </div>
+    </div>
+    <div class="col-12 col-md-4">
+      <div class="stat-card text-center">
+        <div class="h4 mb-0">89</div>
+        <div class="text-muted">Active Merchants</div>
+      </div>
+    </div>
+    <div class="col-12 col-md-4">
+      <div class="stat-card text-center">
+        <div class="h4 mb-0 text-success">23%</div>
+        <div class="text-muted">Growth Rate</div>
+      </div>
+    </div>
+    <div class="col-12 col-md-4">
+      <div class="stat-card text-center">
+        <div class="h4 mb-0">5.2%</div>
+        <div class="text-muted">Platform Fee</div>
+      </div>
+    </div>
+    <div class="col-12 col-md-4">
+      <div class="stat-card text-center">
+        <div class="h4 mb-0">$2,261</div>
+        <div class="text-muted">Commission</div>
+      </div>
+    </div>
+  </div>
+  <button class="btn btn-outline-secondary mt-3">📥 Export Report</button>
+  </section>
+</th:block>
+
+

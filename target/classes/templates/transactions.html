@@ -1,0 +1,31 @@
+<th:block th:replace="~{layout :: content(~{::section})}">
+  <section>
+  <ul class="nav nav-pills mb-3">
+    <li class="nav-item"><a class="nav-link active" href="#">Live</a></li>
+    <li class="nav-item"><a class="nav-link" href="#">Failed</a></li>
+    <li class="nav-item"><a class="nav-link" href="#">Disputed</a></li>
+  </ul>
+  <div class="stat-card mb-3 small">
+    <div class="d-flex justify-content-between border-bottom py-1"><span>9:45 AM</span><span>Brown Coffee</span><span class="text-success">$10.00</span></div>
+    <div class="d-flex justify-content-between border-bottom py-1"><span>9:44 AM</span><span>Pizza Company</span><span class="text-success">$25.00</span></div>
+    <div class="d-flex justify-content-between border-bottom py-1"><span>9:43 AM</span><span>Starbucks</span><span class="text-danger">Failed</span></div>
+    <div class="d-flex justify-content-between py-1"><span>9:42 AM</span><span>Lucky Market</span><span class="text-success">$15.50</span></div>
+  </div>
+  <div class="row g-3">
+    <div class="col-6">
+      <div class="stat-card text-center">
+        <div class="h4 mb-0">234</div>
+        <div class="text-muted">Today</div>
+      </div>
+    </div>
+    <div class="col-6">
+      <div class="stat-card text-center">
+        <div class="h4 mb-0">7</div>
+        <div class="text-muted">Failed</div>
+      </div>
+    </div>
+  </div>
+  </section>
+</th:block>
+
+

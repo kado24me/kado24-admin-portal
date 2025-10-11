@@ -1,0 +1,29 @@
+<th:block th:replace="~{layout :: content(~{::section})}">
+  <section>
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <div class="h5 mb-0">Pending Approvals</div>
+    <span class="badge bg-danger">5</span>
+  </div>
+  <div class="stat-card mb-3" style="border-color:#f39c12;">
+    <div class="fw-bold">Brown Coffee - Riverside</div>
+    <div class="text-muted small">Applied: 2 days ago</div>
+    <div class="small my-2">
+      📄 Business License ✅<br/>
+      🏪 Location Verified ✅<br/>
+      📞 Contact Verified ⏳
+    </div>
+    <div class="d-flex gap-2">
+      <button class="btn btn-success btn-sm">✅ Approve</button>
+      <button class="btn btn-danger btn-sm">❌ Reject</button>
+      <button class="btn btn-secondary btn-sm">👁️ Review</button>
+    </div>
+  </div>
+  <div class="stat-card" style="border-color:#f39c12;">
+    <div class="fw-bold">Lucky Supermarket</div>
+    <div class="text-muted small">Applied: 5 days ago</div>
+    <div class="small my-2">📄 Documents Missing ❌</div>
+  </div>
+  </section>
+</th:block>
+
+
