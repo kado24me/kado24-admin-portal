@@ -1,4 +1,4 @@
-# gifthub-admin-portal
+# kado24-admin-portal
 
 This is the Admin Portal web application (Spring Boot + Thymeleaf).
 
