@@ -4,7 +4,7 @@
   <artifactId>admin-portal</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <name>Admin Portal</name>
-  <description>GiftHub Admin Web Portal</description>
+  <description>Kado24 Admin Web Portal</description>
   <properties>
     <java.version>17</java.version>
     <spring.boot.version>3.3.4</spring.boot.version>
