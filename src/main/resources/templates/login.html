@@ -13,6 +13,12 @@
         <div class="card shadow-sm">
           <div class="card-body">
             <h5 class="card-title text-center mb-3">Kado24 Admin</h5>
+            <div th:if="${param.error}" class="alert alert-danger" role="alert">
+              Invalid username or password. Please try again.
+            </div>
+            <div th:if="${param.logout}" class="alert alert-success" role="alert">
+              You have been logged out successfully.
+            </div>
             <form method="post" th:action="@{/login}">
               <div class="mb-3">
                 <label class="form-label">Username</label>

@@ -1,0 +1,115 @@
+<th:block th:replace="~{layout :: content(~{::section})}">
+  <section>
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <div class="h5 mb-0">Merchant Details</div>
+    <a th:href="@{/merchants(status=${returnStatus ?: 'PENDING'})}" class="btn btn-secondary btn-sm">← Back to List</a>
+  </div>
+  
+  <div th:if="${merchant}" class="stat-card">
+    <div class="d-flex justify-content-between align-items-start mb-3">
+      <h6 class="fw-bold mb-0" th:text="${merchant.businessName}">Business Name</h6>
+      <span class="badge" 
+            th:classappend="${merchant.status == 'PENDING'} ? 'bg-warning text-dark' : 
+                           (${merchant.status == 'APPROVED'} ? 'bg-success' : 
+                           (${merchant.status == 'REJECTED'} ? 'bg-danger' : 'bg-secondary'))"
+            th:text="${merchant.status}">PENDING</span>
+    </div>
+    
+    <hr/>
+    
+    <h6 class="fw-bold mb-3">Verification Information</h6>
+    
+    <div class="row mb-3">
+      <div class="col-md-6" th:if="${merchant.id}">
+        <strong>Merchant ID:</strong> <span class="text-muted" th:text="${merchant.id}"></span>
+      </div>
+      <div class="col-md-6">
+        <strong>Verification Status:</strong>
+        <span class="badge" 
+              th:classappend="${merchant.status == 'PENDING'} ? 'bg-warning text-dark' : 
+                             (${merchant.status == 'APPROVED'} ? 'bg-success' : 
+                             (${merchant.status == 'REJECTED'} ? 'bg-danger' : 'bg-secondary'))"
+              th:text="${merchant.status}">PENDING</span>
+      </div>
+    </div>
+    
+    <h6 class="fw-bold mt-4 mb-3">Contact Information</h6>
+    
+    <div class="row mb-3">
+      <div class="col-md-6" th:if="${merchant.email}">
+        <strong>📧 Email:</strong> <span th:text="${merchant.email}"></span>
+      </div>
+      <div class="col-md-6" th:if="${merchant.phoneNumber}">
+        <strong>📞 Phone:</strong> <span th:text="${merchant.phoneNumber}"></span>
+      </div>
+    </div>
+    
+    <div class="mb-3" th:if="${merchant.address}">
+      <strong>📍 Business Address:</strong> <span th:text="${merchant.address}"></span>
+    </div>
+    
+    <h6 class="fw-bold mt-4 mb-3">Application Timeline</h6>
+    
+    <div class="row mb-3">
+      <div class="col-md-6" th:if="${merchant.appliedAt}">
+        <strong>📅 Application Submitted:</strong> 
+        <span th:text="${#temporals.format(merchant.appliedAt, 'MMM dd, yyyy HH:mm')}"></span>
+      </div>
+      <div class="col-md-6" th:if="${merchant.reviewedAt}">
+        <strong>✅ Last Reviewed:</strong> 
+        <span th:text="${#temporals.format(merchant.reviewedAt, 'MMM dd, yyyy HH:mm')}"></span>
+      </div>
+      <div class="col-md-6" th:unless="${merchant.reviewedAt}">
+        <strong>⏳ Review Status:</strong> 
+        <span class="text-warning">Pending Review</span>
+      </div>
+    </div>
+    
+    <div th:if="${merchant.status == 'PENDING'}" class="alert alert-warning mt-3">
+      <strong>⚠️ Verification Required:</strong> This merchant application is pending verification. Please review all information and documents before approving or rejecting.
+    </div>
+    
+    <hr class="my-4"/>
+    
+    <div class="d-flex gap-2 mt-4" th:if="${merchant.status == 'PENDING'}">
+      <form th:action="@{/merchants/{id}/approve(id=${merchant.id})}" method="post" style="display: inline;">
+        <input type="hidden" name="status" th:value="${returnStatus ?: 'PENDING'}"/>
+        <button class="btn btn-success btn-lg" type="submit" onclick="return confirm('Are you sure you want to approve this merchant?')">
+          ✅ Approve Verification
+        </button>
+      </form>
+      <form th:action="@{/merchants/{id}/reject(id=${merchant.id})}" method="post" style="display: inline;">
+        <input type="hidden" name="status" th:value="${returnStatus ?: 'PENDING'}"/>
+        <button class="btn btn-danger btn-lg" type="submit" onclick="return confirm('Are you sure you want to reject this merchant application?')">
+          ❌ Reject Application
+        </button>
+      </form>
+    </div>
+    
+    <div class="d-flex gap-2 mt-4" th:if="${merchant.status == 'APPROVED'}">
+      <div class="alert alert-success">
+        <strong>✅ Verified:</strong> This merchant has been verified and approved.
+      </div>
+      <form th:action="@{/merchants/{id}/suspend(id=${merchant.id})}" method="post" style="display: inline;">
+        <input type="hidden" name="status" th:value="${returnStatus ?: 'APPROVED'}"/>
+        <button class="btn btn-warning" type="submit" onclick="return confirm('Are you sure you want to suspend this merchant?')">
+          ⚠️ Suspend Merchant
+        </button>
+      </form>
+    </div>
+    
+    <div th:if="${merchant.status == 'REJECTED'}" class="alert alert-danger mt-4">
+      <strong>❌ Rejected:</strong> This merchant application has been rejected.
+    </div>
+    
+    <div th:if="${merchant.status == 'SUSPENDED'}" class="alert alert-warning mt-4">
+      <strong>⚠️ Suspended:</strong> This merchant account has been suspended.
+    </div>
+  </div>
+  
+  <div th:unless="${merchant}" class="alert alert-danger">
+    Merchant not found.
+  </div>
+  </section>
+</th:block>
+

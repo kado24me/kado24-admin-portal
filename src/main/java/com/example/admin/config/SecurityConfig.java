@@ -2,20 +2,26 @@ package com.example.admin.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.client.RestTemplate;
 
 @Configuration
+@EnableWebSecurity
 public class SecurityConfig {
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public RestTemplate restTemplate() {
+        return new RestTemplate();
+    }
+
+    @Bean
+    public SecurityFilterChain securityFilterChain(
+            HttpSecurity http,
+            CustomAuthenticationProvider customAuthProvider) throws Exception {
         http
+            .authenticationProvider(customAuthProvider)
             .authorizeHttpRequests(authorize -> authorize
                 .requestMatchers("/css/**", "/webjars/**", "/login").permitAll()
                 .anyRequest().authenticated()
@@ -23,19 +29,15 @@ public class SecurityConfig {
             .formLogin(form -> form
                 .loginPage("/login").permitAll()
                 .defaultSuccessUrl("/", true)
+                .failureUrl("/login?error=true")
             )
-            .logout(Customizer.withDefaults());
+            .logout(logout -> logout
+                .logoutUrl("/logout")
+                .logoutSuccessUrl("/login?logout")
+                .invalidateHttpSession(true)
+                .deleteCookies("JSESSIONID")
+            );
         return http.build();
-    }
-
-    @Bean
-    public UserDetailsService userDetailsService() {
-        UserDetails admin = User.withDefaultPasswordEncoder()
-            .username("admin")
-            .password("admin123")
-            .roles("ADMIN")
-            .build();
-        return new InMemoryUserDetailsManager(admin);
     }
 }
 

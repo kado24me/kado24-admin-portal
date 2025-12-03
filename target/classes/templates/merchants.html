@@ -1,27 +1,125 @@
 <th:block th:replace="~{layout :: content(~{::section})}">
   <section>
   <div class="d-flex justify-content-between align-items-center mb-3">
-    <div class="h5 mb-0">Pending Approvals</div>
-    <span class="badge bg-danger">5</span>
+    <div class="h5 mb-0">Merchant Verification</div>
+    <span class="badge" 
+          th:classappend="${currentStatus == 'PENDING'} ? 'bg-danger' : 
+                         (${currentStatus == 'APPROVED'} ? 'bg-success' : 
+                         (${currentStatus == 'REJECTED'} ? 'bg-danger' : 'bg-secondary'))"
+          th:text="${#lists.size(merchants)}">0</span>
   </div>
-  <div class="stat-card mb-3" style="border-color:#f39c12;">
-    <div class="fw-bold">Brown Coffee - Riverside</div>
-    <div class="text-muted small">Applied: 2 days ago</div>
-    <div class="small my-2">
-      📄 Business License ✅<br/>
-      🏪 Location Verified ✅<br/>
-      📞 Contact Verified ⏳
-    </div>
-    <div class="d-flex gap-2">
-      <button class="btn btn-success btn-sm">✅ Approve</button>
-      <button class="btn btn-danger btn-sm">❌ Reject</button>
-      <button class="btn btn-secondary btn-sm">👁️ Review</button>
-    </div>
+  
+  <!-- Status Filter Tabs -->
+  <ul class="nav nav-tabs mb-3">
+    <li class="nav-item">
+      <a class="nav-link" 
+         th:classappend="${currentStatus == 'ALL'} ? 'active' : ''"
+         th:href="@{/merchants(status='ALL')}">
+        All
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" 
+         th:classappend="${currentStatus == 'PENDING'} ? 'active' : ''"
+         th:href="@{/merchants(status='PENDING')}">
+        Pending 
+        <span class="badge bg-danger" th:if="${pendingCount > 0}" th:text="${pendingCount}">0</span>
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" 
+         th:classappend="${currentStatus == 'APPROVED'} ? 'active' : ''"
+         th:href="@{/merchants(status='APPROVED')}">
+        Approved
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" 
+         th:classappend="${currentStatus == 'REJECTED'} ? 'active' : ''"
+         th:href="@{/merchants(status='REJECTED')}">
+        Rejected
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" 
+         th:classappend="${currentStatus == 'SUSPENDED'} ? 'active' : ''"
+         th:href="@{/merchants(status='SUSPENDED')}">
+        Suspended
+      </a>
+    </li>
+  </ul>
+  
+  <div th:if="${message}" class="alert alert-success alert-dismissible fade show" role="alert">
+    <span th:text="${message}"></span>
+    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
   </div>
-  <div class="stat-card" style="border-color:#f39c12;">
-    <div class="fw-bold">Lucky Supermarket</div>
-    <div class="text-muted small">Applied: 5 days ago</div>
-    <div class="small my-2">📄 Documents Missing ❌</div>
+  
+  <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+    <span th:text="${error}"></span>
+    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+  </div>
+  
+  <div th:if="${#lists.isEmpty(merchants)}" class="alert alert-info">
+    No <span th:text="${currentStatus}"></span> merchants at this time.
+  </div>
+  
+  <div th:each="merchant : ${merchants}" class="stat-card mb-3" 
+       th:styleappend="${currentStatus == 'PENDING'} ? 'border-color:#f39c12;' : 
+                      (${currentStatus == 'APPROVED'} ? 'border-color:#28a745;' : 
+                      (${currentStatus == 'REJECTED'} ? 'border-color:#dc3545;' : 'border-color:#6c757d;'))">
+    <div class="d-flex justify-content-between align-items-start">
+      <div class="flex-grow-1">
+        <div class="fw-bold" th:text="${merchant.businessName}">Business Name</div>
+        <div class="text-muted small mt-1">
+          <span class="badge" 
+                th:classappend="${merchant.status == 'PENDING'} ? 'bg-warning' : 
+                               (${merchant.status == 'APPROVED'} ? 'bg-success' : 
+                               (${merchant.status == 'REJECTED'} ? 'bg-danger' : 'bg-secondary'))"
+                th:text="${merchant.status}">PENDING</span>
+        </div>
+        <div class="text-muted small mt-2">
+          <span th:if="${merchant.email}">📧 Email: <span th:text="${merchant.email}"></span><br/></span>
+          <span th:if="${merchant.phoneNumber}">📞 Phone: <span th:text="${merchant.phoneNumber}"></span><br/></span>
+          <span th:if="${merchant.address}">📍 Address: <span th:text="${merchant.address}"></span><br/></span>
+          <span th:if="${merchant.appliedAt}">
+            📅 Applied: <span th:text="${#temporals.format(merchant.appliedAt, 'MMM dd, yyyy')}"></span>
+          </span>
+          <span th:if="${merchant.reviewedAt}">
+            <br/>✅ Reviewed: <span th:text="${#temporals.format(merchant.reviewedAt, 'MMM dd, yyyy')}"></span>
+          </span>
+        </div>
+        <div th:if="${merchant.status == 'PENDING'}" class="mt-2">
+          <small class="text-muted">
+            <span class="badge bg-warning text-dark">⏳ Awaiting Verification</span>
+          </small>
+        </div>
+      </div>
+    </div>
+    <div class="d-flex gap-2 mt-3">
+      <!-- Actions for PENDING status -->
+      <div th:if="${merchant.status == 'PENDING'}">
+        <form th:action="@{/merchants/{id}/approve(id=${merchant.id})}" method="post" style="display: inline;">
+          <input type="hidden" name="status" th:value="${currentStatus}"/>
+          <button class="btn btn-success btn-sm" type="submit">✅ Approve</button>
+        </form>
+        <form th:action="@{/merchants/{id}/reject(id=${merchant.id})}" method="post" style="display: inline;">
+          <input type="hidden" name="status" th:value="${currentStatus}"/>
+          <button class="btn btn-danger btn-sm" type="submit">❌ Reject</button>
+        </form>
+      </div>
+      
+      <!-- Actions for APPROVED status -->
+      <div th:if="${merchant.status == 'APPROVED'}">
+        <form th:action="@{/merchants/{id}/suspend(id=${merchant.id})}" method="post" style="display: inline;">
+          <input type="hidden" name="status" th:value="${currentStatus}"/>
+          <button class="btn btn-warning btn-sm" type="submit">⚠️ Suspend</button>
+        </form>
+      </div>
+      
+      <!-- View Details button for all -->
+      <a th:href="@{/merchants/{id}/details(id=${merchant.id}, status=${currentStatus})}" 
+         class="btn btn-secondary btn-sm">👁️ Details</a>
+    </div>
   </div>
   </section>
 </th:block>
